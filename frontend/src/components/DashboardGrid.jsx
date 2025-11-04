@@ -1,6 +1,3 @@
-// frontend/src/components/DashboardGrid.jsx
-
-// DashboardGrid.jsx
 // Comentários (PT-BR):
 // - Componente que organiza e renderiza uma grade responsiva de widgets
 // - Usa `react-grid-layout` para arrastar/redimensionar widgets
@@ -79,7 +76,7 @@ const DashboardGrid = () => {
     );
   };
 
-  // Persist widgets to localStorage whenever they change
+  // Persiste os widgets no localStorage sempre que mudarem
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(widgets));

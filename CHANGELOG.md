@@ -17,10 +17,4 @@ Todas as mudanças importantes neste repositório estão listadas aqui em ordem 
   - Layout e estilo: título da página, favicon, logo no topo do sidebar, Sider fixo ao rolar, tradução do menu para PT-BR, ajuste de cores e estilos. Arquivos: `frontend/src/App.jsx`, `frontend/src/App.css`, `frontend/index.html`.
   - MVP frontend para Gerenciador de Arquivos (upload em localStorage) e Configurações (localStorage). Arquivos: `frontend/src/components/Files.jsx`, `frontend/src/components/Settings.jsx`.
 
-## Observações
-
-- Algumas melhorias (persistência backend para uploads/configs, testes automatizados, otimizações de UX) foram sugeridas e listadas no `Markdowns (Excluir depois)/historico.md`.
-
----
-
 Este CHANGELOG foi gerado automaticamente em 2025-11-03 durante a sessão de desenvolvimento.

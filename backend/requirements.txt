@@ -1,11 +1,10 @@
 psycopg2-binary==2.9.9
 Faker==20.1.0
-# Os itens abaixo são referentes ao roteiro
 fastapi
 uvicorn[standard]
 sqlalchemy
-asyncpg         # Driver assíncrono para PostgreSQL
+asyncpg
 pydantic
-python-dotenv   # Para ler o arquivo.env
+python-dotenv  
 pytest
 httpx

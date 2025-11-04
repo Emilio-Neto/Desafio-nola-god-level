@@ -17,7 +17,7 @@ class DummySession:
         self.last_q = None
 
     async def execute(self, query):
-        # store the query so the test can inspect its SQL/text form
+        # armazena a query para que o teste possa inspecionar sua forma SQL/texto
         self.last_q = query
         return DummyResult()
 

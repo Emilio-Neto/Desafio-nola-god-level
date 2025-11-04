@@ -1,11 +1,7 @@
-// frontend/src/api/index.js
-
 import axios from 'axios';
 
-// 1. Configura a URL base da nossa API (que está rodando em http://127.0.0.1:8000)
-// O Vite/React (rodando na porta 5173) fará a chamada para o FastAPI (rodando na porta 8000)
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/v1', // Nosso prefixo de API do backend
+  baseURL: 'http://127.0.0.1:8000/api/v1', 
 });
 
 /**
@@ -21,8 +17,6 @@ export const fetchAnalyticsData = async (queryConfig) => {
     throw error; // Repassa o erro para quem chamou
   }
 };
-
-// --- ADICIONE ESTAS NOVAS FUNÇÕES ---
 
 /**
  * Busca as métricas disponíveis

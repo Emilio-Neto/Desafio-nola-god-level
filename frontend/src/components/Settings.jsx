@@ -20,7 +20,7 @@ const Settings = () => {
         form.setFieldValue('accent', parsed.accent || '#fd6263');
       }
     } catch (e) {
-      // ignore
+      // ignorar
     }
   }, [form]);
 
@@ -32,7 +32,7 @@ const Settings = () => {
         defaultDateRange: values.defaultDateRange || [null, null],
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      // apply default dateRange to the store so dashboard uses it immediately
+      // aplica o dateRange padrão ao store para que o dashboard passe a usar imediatamente
       if (Array.isArray(payload.defaultDateRange) && payload.defaultDateRange[0] && payload.defaultDateRange[1]) {
         setDateRange(payload.defaultDateRange);
       }

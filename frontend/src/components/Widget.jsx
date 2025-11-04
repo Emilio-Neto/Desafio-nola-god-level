@@ -1,8 +1,4 @@
-// frontend/src/components/Widget.jsx
-
 /*
-  Widget.jsx
-
   Comentários (PT-BR):
   - Componente reutilizável que exibe um widget do dashboard com título,
     gráfico (ECharts) e um modal de configuração.
@@ -26,15 +22,6 @@ import { transformDataToBarChart } from '../utils/chartHelpers';
 import { fetchStates, fetchCities } from '../api';
 import { SettingOutlined } from '@ant-design/icons';
 
-/**
- * Configurable Widget component.
- * Props:
- *  - id (string)
- *  - title (string)
- *  - queryConfig (object)
- *  - onUpdate(id, newTitle, newQueryConfig) (function)
- *  - metadata? { metrics, dimensions } (optional)
- */
 const { Option } = Select;
 
 const Widget = ({ id, title, queryConfig, onUpdate, metadata = {} }) => {

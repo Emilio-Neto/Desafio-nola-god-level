@@ -1,5 +1,3 @@
-// frontend/src/utils/chartHelpers.js
-
 /**
  * Transforma os dados da API em um formato de 'option' para um gráfico de barras ECharts.
  * @param {Array} apiData - O array 'data' da nossa API
@@ -8,11 +6,12 @@
  */
 export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata = {}) => {
   // Support queryConfig.dimensions/metrics being arrays or single values.
+  // Suporta queryConfig.dimensions/metrics sendo arrays ou valores únicos.
   const dims = Array.isArray(queryConfig.dimensions) ? queryConfig.dimensions : (queryConfig.dimensions ? [queryConfig.dimensions] : []);
   const mets = Array.isArray(queryConfig.metrics) ? queryConfig.metrics : (queryConfig.metrics ? [queryConfig.metrics] : []);
 
-  // Pick the first dimension/metric as primary for simple bar charts. If multiple metrics are provided,
-  // render one series per metric.
+  // Seleciona a primeira dimensão/métrica como principal para gráficos de barras simples. Se múltiplas métricas
+  // forem fornecidas, renderiza uma série por métrica.
   const primaryDim = dims[0];
   if (!primaryDim || mets.length === 0) {
     return {
@@ -24,7 +23,7 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     };
   }
 
-  // Build categories (x axis) and series data
+  // Constrói as categorias (eixo x) e os dados das séries
   const categories = apiData.map(item => {
     const v = item[primaryDim];
     // normalize null/undefined
@@ -32,28 +31,27 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     return String(v);
   });
 
-  // Helper: parse numbers coming from API which may be strings using localized
-  // thousand/decimal separators (e.g. '1.234.567' or '1.234,56'). Returns NaN
-  // when parsing fails.
+  // Auxiliar: faz parse de números vindos da API que podem ser strings usando separadores locais
+  // de milhares/decimais (ex.: '1.234.567' ou '1.234,56'). Retorna NaN quando o parse falha.
   const parseNumber = (raw) => {
     if (raw === null || raw === undefined) return NaN;
     if (typeof raw === 'number') return raw;
     if (typeof raw === 'string') {
       let s = raw.trim();
-      // if both '.' and ',' present, assume '.' thousands and ',' decimal
+      // se tanto '.' quanto ',' estiverem presentes, assume '.' para milhares e ',' para decimal
       if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
         s = s.replace(/\./g, '').replace(/,/g, '.');
       } else if (s.indexOf(',') !== -1 && s.indexOf('.') === -1) {
         // '1234,56' -> '1234.56'
         s = s.replace(/,/g, '.');
       } else if ((s.match(/\./g) || []).length > 1) {
-        // multiple dots like '1.234.567' -> remove dots
+        // múltiplos pontos como '1.234.567' -> remover pontos
         s = s.replace(/\./g, '');
       }
       const n = Number(s);
       return Number.isFinite(n) ? n : NaN;
     }
-    // fallback for objects (e.g. Decimal from backend stringified)
+  // fallback para objetos (ex.: Decimal serializado pelo backend)
     try {
       const s = raw.toString();
       const n = Number(s);
@@ -63,11 +61,11 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     }
   };
 
-  // build label maps from metadata (if provided)
+  // constrói mapas de rótulos a partir do metadata (se fornecido)
   const metricLabelMap = (metadata.metrics || []).reduce((acc, m) => { acc[m.id] = m.name; return acc; }, {});
   const dimensionLabelMap = (metadata.dimensions || []).reduce((acc, d) => { acc[d.id] = d.name; return acc; }, {});
 
-  // Local PT-BR fallbacks (used if metadata is missing or doesn't contain a friendly name)
+  // Rótulos locais em PT-BR (usados se metadata estiver ausente ou não contiver um nome amigável)
   const LOCAL_METRIC_LABELS = {
     total_revenue: 'Receita Total',
     order_count: 'Total de Pedidos',
@@ -84,7 +82,7 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     order_hour: 'Hora do Pedido',
   };
 
-  // Prefer local PT-BR labels first, then backend metadata, then raw id
+  // Preferir rótulos PT-BR locais primeiro, depois metadata do backend, depois o id cru
   const series = mets.map(metricId => ({
     name: LOCAL_METRIC_LABELS[metricId] || metricLabelMap[metricId] || metricId,
     type: 'bar',
@@ -93,15 +91,15 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
       const parsed = parseNumber(raw);
       return Number.isFinite(parsed) ? parsed : 0;
     }),
-    // nicer default bar width and gap
+    // largura padrão agradável para barras e espaçamento
     barWidth: '40%',
-    // set accent color for bars to match brand
+    // cor de destaque para as barras para combinar com a identidade visual
     itemStyle: {
       color: '#fd6263',
     },
   }));
 
-  // Y axis label formatter (thousands separator)
+  // Formatador do rótulo do eixo Y (separador de milhares)
   const yAxisFormatter = (val) => {
     try {
       if (Math.abs(val) >= 1000) return Math.round(val).toLocaleString();
@@ -111,7 +109,7 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     }
   };
 
-  // compute max value across series to give the chart some headroom so bars are visible
+  // calcula o valor máximo entre as séries para dar uma folga ao gráfico e garantir visibilidade das barras
   const allValues = series.reduce((acc, s) => acc.concat(s.data), []);
   const maxVal = allValues.length ? Math.max(...allValues) : 0;
   const suggestedMax = maxVal > 0 ? Math.ceil(maxVal * 1.1) : undefined;
@@ -120,9 +118,9 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      // format tooltip numbers
+      // formata os números do tooltip
       formatter: function (params) {
-        // params is an array when axis trigger
+        // params é um array quando o disparador é por eixo
         if (Array.isArray(params)) {
           const name = params[0]?.axisValueLabel ?? '';
           const lines = params.map(p => `${p.seriesName}: ${typeof p.data === 'number' ? p.data.toLocaleString() : p.data}`);
@@ -138,12 +136,12 @@ export const transformDataToBarChart = (apiData = [], queryConfig = {}, metadata
         rotate: 25,
         interval: 0,
         formatter: (val) => {
-          // truncate long labels
+          // truncar rótulos longos
           if (typeof val === 'string' && val.length > 20) return val.slice(0, 20) + '…';
           return val;
         },
       },
-      // Prefer PT-BR local label, then metadata, then raw id
+      // Preferir rótulo PT-BR local, depois metadata, depois id cru
       name: LOCAL_DIMENSION_LABELS[primaryDim] || dimensionLabelMap[primaryDim] || primaryDim,
       nameLocation: 'middle',
       nameGap: 40,

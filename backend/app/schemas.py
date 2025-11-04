@@ -1,5 +1,3 @@
-# backend/app/schemas.py
-
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import List, Any, Literal, Optional
 from datetime import datetime, date, time
@@ -20,10 +18,10 @@ from datetime import datetime, date, time
 
 
 def _parse_date_value(val, *, end_of_day=False):
-    """Try to parse a value into a datetime.
-    - If val is already datetime/date, convert accordingly.
-    - If val is an ISO date or datetime string, parse it.
-    - Otherwise return val unchanged.
+    """Tenta parsear um valor para um datetime.
+    - Se val já for datetime/date, converte adequadamente.
+    - Se val for uma string em formato ISO (data ou datetime), faz o parse.
+    - Caso contrário retorna o valor inalterado.
     """
     if isinstance(val, datetime):
         return val
@@ -31,15 +29,15 @@ def _parse_date_value(val, *, end_of_day=False):
         return datetime.combine(val, time.max if end_of_day else time.min)
     if isinstance(val, str):
         try:
-            # Handles 'YYYY-MM-DD' and 'YYYY-MM-DDTHH:MM:SS' formats
+        # Trata formatos 'YYYY-MM-DD' e 'YYYY-MM-DDTHH:MM:SS'
             parsed = datetime.fromisoformat(val)
-            # fromisoformat may return date for date-only strings in some contexts,
-            # but here we ensure a datetime
+        # fromisoformat pode retornar date para strings só com data; aqui
+        # garantimos que iremos retornar um datetime
             if isinstance(parsed, date) and not isinstance(parsed, datetime):
                 return datetime.combine(parsed, time.max if end_of_day else time.min)
             return parsed
         except Exception:
-            # Fallback attempt for strings like 'YYYY-MM-DD ...'
+            # Tentativa alternativa para strings como 'YYYY-MM-DD ...'
             try:
                 part = val.split('T')[0].split(' ')[0]
                 y, m, d = [int(x) for x in part.split('-')]
@@ -122,7 +120,7 @@ class AnalyticsQueryRequest(BaseModel):
         json_schema_extra={"example": ["product_name", "channel_name"]}
     )
     filters: List[Filter] = Field(
-        default=[],  # CORREÇÃO: O valor padrão deve ser uma lista vazia.
+        default=[],
         description="Lista de filtros a serem aplicados na consulta."
     )
     time_grain: Optional[Literal['day', 'week', 'month']] = Field(

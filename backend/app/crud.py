@@ -1,12 +1,8 @@
-# backend/app/crud.py
-
 from sqlalchemy import select, func
 from sqlalchemy.sql.sqltypes import Date, DateTime
 from datetime import datetime, date, time
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Dict, Any
-
-# Importa os schemas Pydantic e as definições de tabela
 from . import schemas
 from .models import stores, channels, products, sales, product_sales
 
@@ -28,7 +24,7 @@ from .models import stores, channels, products, sales, product_sales
 # CAMADA SEMÂNTICA: Mapeamento de IDs da API para Lógica SQL
 # =============================================================================
 
-# 1. MAPEAMENTO DE MÉTRICAS
+# MAPEAMENTO DE MÉTRICAS
 METRIC_MAP = {
     "total_revenue": func.sum(
         product_sales.c.base_price * product_sales.c.quantity
@@ -41,27 +37,27 @@ METRIC_MAP = {
     ).label("avg_order_value"),
 }
 
-# 2. MAPEAMENTO DE DIMENSÕES (para agrupamento e seleção)
+# MAPEAMENTO DE DIMENSÕES (para agrupamento e seleção)
 DIMENSION_MAP = {
     "product_name": products.c.name.label("product_name"),
     "product_category": products.c.category.label("product_category"),
     "channel_name": channels.c.name.label("channel_name"),
     "store_name": stores.c.name.label("store_name"),
-    # sales.created_at maps to the original order_time
+    # sales.created_at corresponde ao horário original do pedido (order_time)
     "order_day_of_week": func.to_char(sales.c.created_at, 'Day').label("order_day_of_week"),
     "order_hour": func.extract('hour', sales.c.created_at).label("order_hour"),
-    # schema does not include a 'region' column on sales; map to store city if needed
-    # Prefer a 'district' column (bairro) if present; then 'city'; otherwise
-    # fall back to store name so the 'region' dimension always resolves to a
-    # valid column. Using 'district' gives a more granular location (bairro).
+    # O esquema não inclui uma coluna 'region' em sales; mapeamos para a cidade
+    # da loja quando necessário. Prefira coluna 'district' (bairro) se presente;
+    # caso contrário use 'city' ou, em último caso, o nome da loja. Assim a
+    # dimensão 'region' sempre resolve para uma coluna válida. 'district' oferece
+    # uma granularidade maior (bairro).
     "region": (
         stores.c.district.label("region") if hasattr(stores.c, 'district')
         else (stores.c.city.label("region") if hasattr(stores.c, 'city') else stores.c.name.label("region"))
     ),
 }
 
-# 3. MAPEAMENTO DE CAMPOS FILTRÁVEIS (para a cláusula WHERE)
-# CORREÇÃO: Separado do DIMENSION_MAP para permitir filtros em campos não agrupados (como data)
+# MAPEAMENTO DE CAMPOS FILTRÁVEIS (para a cláusula WHERE)
 FILTER_MAP = {
     **DIMENSION_MAP,  # Inclui todas as dimensões
     # Campos de IDs e datas que podem ser úteis em filtros diretos
@@ -114,33 +110,34 @@ async def get_analytics_data(
     for f in getattr(query_request, "filters", []) or []:
         if not hasattr(f, "field"):
             continue
-        # resolve the column from the filter map
+    # resolve a coluna a partir do mapa de filtros
         if f.field in FILTER_MAP and FILTER_MAP[f.field] is not None:
             column = FILTER_MAP[f.field]
-            # Helper: try to coerce string date values to proper datetimes when
-            # column is a Date/DateTime type. This avoids sending VARCHAR binds
-            # to a timestamp column (which causes the "operator does not exist"
-            # error seen in asyncpg).
+            # Helper: tentar coerir valores de data em string para datetimes
+            # quando a coluna for do tipo Date/DateTime. Isso evita enviar binds
+            # VARCHAR para uma coluna timestamp (o que causa o erro
+            # "operator does not exist" observado no asyncpg).
             def _to_datetime(val, end_of_day=False):
-                # If val is already a date/datetime, normalize to datetime
+                # Se val já for date/datetime, normaliza para datetime
                 if isinstance(val, datetime):
                     return val
                 if isinstance(val, date) and not isinstance(val, datetime):
-                    # date -> datetime at start or end of day
+                    # date -> datetime no começo ou fim do dia
                     if end_of_day:
                         return datetime.combine(val, time.max)
                     return datetime.combine(val, time.min)
                 if isinstance(val, str):
-                    # Try ISO formats: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
+                    # Tenta formatos ISO: YYYY-MM-DD ou YYYY-MM-DDTHH:MM:SS
                     try:
-                        # datetime.fromisoformat handles both date and datetime
+                        # datetime.fromisoformat lida com date e datetime
                         parsed = datetime.fromisoformat(val)
-                        # If a date-only string was given, fromisoformat returns date
+                        # Se uma string só com data for retornada como date,
+                        # garante que retornamos um datetime
                         if isinstance(parsed, date) and not isinstance(parsed, datetime):
                             return datetime.combine(parsed, time.max if end_of_day else time.min)
                         return parsed
                     except Exception:
-                        # Fallback: try parsing YYYY-MM-DD by splitting
+                        # Fallback: tenta parsear YYYY-MM-DD por divisão de string
                         try:
                             parts = val.split('T')[0].split(' ')[0]
                             y, m, d = [int(x) for x in parts.split('-')]
@@ -150,7 +147,7 @@ async def get_analytics_data(
                             return val
                 return val
 
-            # For date-like comparisons, coerce string inputs to datetime
+            # Para comparações de tipo date, coerir entradas string para datetime
             is_date_column = hasattr(column, 'type') and isinstance(column.type, (Date, DateTime))
 
             if f.operator == 'eq':

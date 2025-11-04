@@ -4,7 +4,7 @@ import asyncpg
 
 
 async def main():
-    # Allow overriding the connection URL via environment for flexibility in dev
+    # Permite sobrepor a URL de conexão via variável de ambiente para flexibilidade em dev
     db_url = os.getenv(
         "TEST_DB_URL",
         "postgresql://challenge:challenge_2024@127.0.0.1:5433/challenge_db",

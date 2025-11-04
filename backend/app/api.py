@@ -1,17 +1,7 @@
-"""backend/app/api.py
-
-Arquivo limpo do router da API. A versão legada foi movida para
-`Markdowns (Excluir depois)/api_legacy_reference.md` para referência.
-
-Contém endpoints de metadata, analytics e health.
-"""
-
 import time
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Dict, Any
-
-# Importa todas as nossas ferramentas dos outros arquivos
 from . import schemas, crud
 from .database import get_db
 from sqlalchemy.exc import SQLAlchemyError
@@ -35,7 +25,6 @@ from .models import stores
 # CONFIGURAÇÃO DO ROUTER
 # =============================================================================
 
-# Usamos um APIRouter para organizar nossos endpoints de forma modular.
 router = APIRouter(
     prefix="/api/v1",
     tags=["Analytics"],
@@ -106,7 +95,7 @@ async def execute_analytics_query(
     # Mede o tempo de início para calcular a duração da execução
     start_time = time.time()
 
-    # 1. Chama a função do construtor de queries de crud.py
+    # Chama a função do construtor de queries de crud.py
     # A execução da query no banco de dados acontece aqui de forma assíncrona.
     data = await crud.get_analytics_data(query_request=query_request, db=db)
 
@@ -114,7 +103,7 @@ async def execute_analytics_query(
     end_time = time.time()
     execution_time_ms = (end_time - start_time) * 1000
 
-    # 2. Retorna os resultados no formato JSON esperado
+    # Retorna os resultados no formato JSON esperado
     # O FastAPI garante que este dicionário corresponda ao `AnalyticsQueryResponse`.
     return {
         "data": data,

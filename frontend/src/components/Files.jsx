@@ -27,7 +27,7 @@ const Files = ({ onUseAsLogo }) => {
 
   const persist = (next) => {
     setFiles(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* ignorar */ }
   };
 
   const handleUpload = async ({ file, onSuccess }) => {

@@ -1,17 +1,14 @@
-# backend/app/models.py
-
 from sqlalchemy import (
     Table, MetaData, Column, String, DateTime, Integer, Numeric, ForeignKey
 )
 
-# MetaData é um catálogo que armazena a definição das nossas tabelas.
 metadata = MetaData()
 
-# NOTE: The project's provided SQL schema uses different table names
-# (e.g. `sales`, `product_sales`) and integer `id` primary keys.
-# We map a minimal subset of those tables here so the analytics
-# queries in `crud.py` can join the actual DB objects created by
-# `database-schema.sql` / Docker init scripts.
+# NOTA: O esquema SQL fornecido pelo projeto usa nomes de tabelas
+# diferentes (ex.: `sales`, `product_sales`) e chaves primárias do tipo inteiro.
+# Aqui mapeamos um subconjunto mínimo dessas tabelas para que as
+# consultas analíticas em `crud.py` possam fazer JOINs com os objetos
+# reais do banco criados por `database-schema.sql` / scripts de inicialização do Docker.
 
 stores = Table('stores', metadata,
     Column('id', Integer, primary_key=True),
@@ -38,7 +35,7 @@ products = Table('products', metadata,
     Column('category', String)
 )
 
-# sales replaces the previously-named `orders` table in older drafts
+# sales substitui a tabela anteriormente chamada `orders` em rascunhos antigos
 sales = Table('sales', metadata,
     Column('id', Integer, primary_key=True),
     Column('store_id', Integer, ForeignKey('stores.id')),
@@ -50,7 +47,7 @@ sales = Table('sales', metadata,
     Column('sale_status_desc', String)
 )
 
-# product_sales contains the individual product rows for each sale
+# product_sales contém as linhas individuais de produtos para cada venda
 product_sales = Table('product_sales', metadata,
     Column('id', Integer, primary_key=True),
     Column('sale_id', Integer, ForeignKey('sales.id')),

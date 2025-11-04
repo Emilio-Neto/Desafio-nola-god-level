@@ -14,12 +14,12 @@ class DummySession:
 
 
 async def override_get_db():
-    # Async generator dependency that yields a dummy session
+    # Dependência geradora assíncrona que fornece uma sessão dummy
     yield DummySession()
 
 
 def test_health_ok(monkeypatch):
-    # Override the DB dependency so the health endpoint doesn't hit a real DB
+    # Sobrescreve a dependência do DB para que o endpoint de health não acesse um DB real
     app.dependency_overrides[get_db] = override_get_db
     client = TestClient(app)
 
@@ -27,5 +27,5 @@ def test_health_ok(monkeypatch):
     assert resp.status_code == 200
     assert resp.json() == {"status": "ok", "db": "connected"}
 
-    # cleanup override
+    # limpeza da sobrescrita
     app.dependency_overrides.pop(get_db, None)

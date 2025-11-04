@@ -1,5 +1,3 @@
-// frontend/src/hooks/useMetadata.js
-
 import { useState, useEffect } from 'react';
 import { fetchMetrics, fetchDimensions } from '../api';
 

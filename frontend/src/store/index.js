@@ -1,5 +1,3 @@
-// frontend/src/store/index.js
-
 import { create } from 'zustand';
 
 /**

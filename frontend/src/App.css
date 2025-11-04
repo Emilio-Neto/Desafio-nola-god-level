@@ -41,8 +41,6 @@
   color: #888;
 }
 
-/* frontend/src/App.css */
-
 .logo-placeholder {
   height: auto;
   /* keep left/right/top margins but remove bottom margin so we control the space to the menu explicitly */
@@ -94,7 +92,7 @@
 }
 
 /* Ensure the internal children container starts below the logo and fills the remaining height
-   so the menu area spans from just under the logo to the bottom of the sider. */
+  para que a área do menu vá debaixo do logo até a parte inferior do sider. */
 .ant-layout-sider > .ant-layout-sider-children {
   display: flex;
   flex-direction: column;
@@ -124,8 +122,8 @@
   overflow: auto; /* allow scrolling if items overflow the available height */
 }
 
-/* Make the Sider fixed so it stays visible while the content scrolls. Adjust the
-   sibling Layout's margin so it doesn't get covered. Handles collapsed state too. */
+/* Torna o Sider fixo para que permaneça visível enquanto o conteúdo rola. Ajusta
+  a margin do Layout irmão para que não seja coberto. Também trata o estado recolhido. */
 .ant-layout > .ant-layout-sider {
   position: fixed;
   left: 0;
@@ -134,18 +132,18 @@
   z-index: 1000;
 }
 
-/* Default sider width in Ant is 200px; collapsed width usually 80px. Keep smooth transition. */
+/* A largura padrão do sider no Ant é 200px; a largura recolhida geralmente é 80px. Mantém transição suave. */
 .ant-layout > .ant-layout-sider + .ant-layout {
   margin-left: 200px;
   transition: margin-left 200ms ease;
 }
 
-/* When the sider is collapsed Ant adds the 'ant-layout-sider-collapsed' class */
+/* Quando o sider está recolhido o Ant adiciona a classe 'ant-layout-sider-collapsed' */
 .ant-layout > .ant-layout-sider.ant-layout-sider-collapsed + .ant-layout {
   margin-left: 80px;
 }
 
-/* Small screens: don't fix the sider so mobile UX stays normal */
+/* Telas pequenas: não fixar o sider para que a experiência móvel permaneça normal */
 @media (max-width: 768px) {
   .ant-layout > .ant-layout-sider {
     position: relative;
@@ -162,22 +160,22 @@
   margin: 0 12px 12px 12px;
   border-radius: 12px;
   overflow: hidden; /* clip menu so corners appear rounded */
-  /* darker blue block for menu area */
+  /* bloco azul mais escuro para a área do menu */
   background: linear-gradient(180deg,#061726 0%, #062634 100%);
-  /* we remove the small default top padding: padding for the visual gap will be provided explicitly on the inner menu */
+  /* removemos o pequeno padding-top padrão: o espaçamento visual será fornecido explicitamente no menu interno */
   padding-top: 0;
 }
 
-/* Tweak menu inner background to match dark theme while keeping rounded corners */
+/* Ajusta o background interno do menu para combinar com o tema escuro mantendo cantos arredondados */
 .sidebar-menu-wrapper .ant-menu {
   height: 100%;
   background: transparent !important;
   border-radius: 12px;
-  /* make the inner top padding equal to the distance from the logo to the menu block so spacing appears balanced */
+  /* faz o padding-top interno igual à distância do logo ao bloco do menu para que o espaçamento fique equilibrado */
   padding-top: 16px !important;
 }
 
-/* make the rounded top of the menu more pronounced */
+/* torna o topo arredondado do menu mais pronunciado */
 .sidebar-menu-wrapper .ant-menu-root {
   border-top-right-radius: 12px;
 }
@@ -220,8 +218,6 @@
 .widget-container >.echarts-for-react {
   flex-grow: 1;
 }
-
-/*... seus estilos anteriores... */
 
 .widget-header {
   display: flex;

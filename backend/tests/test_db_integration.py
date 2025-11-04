@@ -6,11 +6,11 @@ import asyncpg
 async def _check_db(db_url: str) -> bool:
     conn = await asyncpg.connect(db_url)
     try:
-        # Check that key tables exist by counting rows (will raise if table missing)
+    # Verifica que tabelas chave existem contando linhas (vai levantar erro se tabela faltar)
         await conn.fetchval("SELECT 1 FROM sales LIMIT 1;")
         await conn.fetchval("SELECT 1 FROM product_sales LIMIT 1;")
 
-        # Run a minimal analytics-like aggregation to ensure joins work
+    # Executa uma agregação mínima parecida com a analítica para garantir que os JOINs funcionem
         q = """
         SELECT
           sum(product_sales.base_price * product_sales.quantity) AS total_revenue,
@@ -29,11 +29,12 @@ async def _check_db(db_url: str) -> bool:
 
 
 def test_db_has_schema_and_analytics_query():
-    """Integration check: connects to DB and ensures schema + sample analytics query execute.
+    """Verificação de integração: conecta ao DB e garante que o esquema
+    e uma consulta analítica de exemplo executem corretamente.
 
-    This test is intended as a safety net in CI / local dev to catch the
-    "relation does not exist" error early. It requires a running Postgres
-    instance populated with the project's schema/data.
+    Este teste serve como uma rede de segurança em CI / dev local para
+    capturar cedo o erro "relation does not exist". Requer uma instância
+    Postgres em execução e populada com o esquema/dados do projeto.
     """
     db_url = os.getenv(
         "TEST_DB_URL",
@@ -41,6 +42,6 @@ def test_db_has_schema_and_analytics_query():
         "postgresql://challenge:challenge_2024@127.0.0.1:5433/challenge_db",
     )
 
-    # Run the async check; if any table is missing or the query errors,
-    # asyncpg will raise and the test will fail, surface the original error.
+    # Executa a verificação assíncrona; se alguma tabela faltar ou a query falhar,
+    # o asyncpg levantará exceção e o teste falhará, expondo o erro original.
     assert asyncio.run(_check_db(db_url)) is True

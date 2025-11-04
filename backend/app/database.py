@@ -1,55 +1,3 @@
-''' PRIMEIRA VERSÃO DO ARQUIVO
-
-# backend/app/database.py
-
-import os
-from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-
-# 1. Carregar as variáveis de ambiente do arquivo.env
-load_dotenv()
-
-# 2. Obter a URL de conexão do banco de dados a partir das variáveis de ambiente
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-# 3. Validar se a URL foi encontrada
-if not DATABASE_URL:
-    raise ValueError("A variável de ambiente DATABASE_URL não foi definida.")
-
-# 4. Criar o "engine" assíncrono do SQLAlchemy
-# O engine é o ponto central de comunicação com o banco de dados.
-# O `echo=True` é útil para desenvolvimento, pois imprime no console
-# todas as queries SQL que são executadas. Remova ou comente em produção.
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=True,
-)
-
-# 5. Criar uma fábrica de sessões assíncronas
-# A sessão é a sua "conversa" com o banco de dados. Esta fábrica
-# criará novas sessões sob demanda.
-# `expire_on_commit=False` é importante para o padrão do FastAPI,
-# para que os dados continuem acessíveis após o commit.
-AsyncSessionFactory = async_sessionmaker(
-    bind=engine,
-    autoflush=False,
-    expire_on_commit=False,
-)
-
-# 6. Criar uma dependência para ser usada nos endpoints da API
-# Esta função irá gerar uma sessão para cada requisição que chegar na API
-# e garantir que ela seja fechada ao final, liberando a conexão.
-async def get_db() -> AsyncSession:
-    async with AsyncSessionFactory() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
-
-'''
-
-# backend/app/database.py
-
 import os
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -72,7 +20,6 @@ if not DATABASE_URL:
     raise ValueError("A variável de ambiente DATABASE_URL não foi definida no arquivo .env ou está vazia")
 
 # Cria o "engine" assíncrono do SQLAlchemy.
-# O engine é o ponto central de comunicação com o banco de dados.
 # echo=True é útil para desenvolvimento, pois imprime as queries SQL executadas.
 engine = create_async_engine(
     DATABASE_URL,

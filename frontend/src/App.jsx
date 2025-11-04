@@ -1,5 +1,3 @@
-// frontend/src/App.jsx
-
 import React, { useState } from 'react';
 import NolaLogo from './assets/Nola Logo.png';
 import NolaFavicon from './assets/Nola Favicon.png';
@@ -39,7 +37,7 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  // PEGUE A AÇÃO setDateRange DO STORE
+  // AÇÃO setDateRange DO STORE
   const setDateRange = useAppStore((state) => state.setDateRange);
 
   const [selectedKey, setSelectedKey] = useState('1');
@@ -60,7 +58,7 @@ const App = () => {
     }
   };
 
-  // CRIE O HANDLER PARA MUDANÇA DE DATA
+  // HANDLER PARA MUDANÇA DE DATA
   const onDateChange = (dates, dateStrings) => {
     // dateStrings será algo como ["2025-10-01", "2025-10-31"]
     setDateRange(dateStrings);
@@ -106,7 +104,7 @@ const App = () => {
         >
           <h2 className="header-greeting">Olá, Maria.</h2>
 
-          {/* ADICIONE O RANGEPICKER AQUI */}
+          {/* RANGEPICKER */}
           <div>
             <span style={{ marginRight: 8 }}>Filtrar por Data:</span>
             <RangePicker onChange={onDateChange} />

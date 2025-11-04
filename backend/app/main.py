@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # 1. IMPORTE O CORSMiddleware
-from .api import router as api_router  # Importa o router do arquivo api.py
-
-# Importar o engine para checar conexão no startup
+from fastapi.middleware.cors import CORSMiddleware
+from .api import router as api_router  
 from .database import engine
 from sqlalchemy import text
 import logging
@@ -10,7 +8,6 @@ from contextlib import asynccontextmanager
 import asyncio
 
 logger = logging.getLogger("nola")
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,7 +41,6 @@ async def lifespan(app: FastAPI):
 
     # application shutdown (no-op for now, place to clean resources if needed)
 
-
 # Cria a instância principal da aplicação FastAPI com lifespan
 app = FastAPI(
     title="Nola Analytics API",
@@ -53,16 +49,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# 2. DEFINA AS ORIGENS PERMITIDAS
-# Estas são as URLs que podem fazer requisições para sua API
 origins = [
     "http://localhost:5173",
-    # Vite pode usar 127.0.0.1 dependendo da configuração; incluímos também
     "http://127.0.0.1:5173",
 ]
 
-# 3. ADICIONE O MIDDLEWARE DE CORS
-# Isso deve ser adicionado antes de incluir os routers
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,       # Permite as origens da lista
@@ -73,7 +64,6 @@ app.add_middleware(
 
 # Inclui as rotas definidas no arquivo api.py na aplicação principal
 app.include_router(api_router)
-
 
 # Endpoint raiz para verificar se a API está no ar
 @app.get("/")

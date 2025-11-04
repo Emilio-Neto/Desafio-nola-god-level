@@ -1,5 +1,3 @@
-// frontend/src/hooks/useAnalyticsQuery.js
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchAnalyticsData } from '../api';
 import { useAppStore } from '../store';
@@ -18,13 +16,13 @@ export const useAnalyticsQuery = (queryConfig) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // global date filter from app-level store
+  // filtro de data global vindo do store de nível de aplicação
   const dateRange = useAppStore((state) => state.dateRange);
 
-  // simple refetch trigger
+  // gatilho simples para refetch
   const refetchTick = useRef(0);
 
-  // Build a stable key for queryConfig to use in deps (simple deep-ish check)
+  // Constrói uma chave estável para o queryConfig usar nas dependências (checagem profunda simples)
   const queryKey = React.useMemo(() => {
     try {
       return JSON.stringify(queryConfig || {});
@@ -35,7 +33,7 @@ export const useAnalyticsQuery = (queryConfig) => {
 
   const doFetch = useCallback(
     async (opts = { aborted: false }) => {
-      // compose final query including store dateRange
+      // compõe a query final incluindo o dateRange do store
       if (!queryConfig || !queryConfig.metrics || !queryConfig.dimensions) {
         setData(null);
         setLoading(false);
@@ -60,7 +58,7 @@ export const useAnalyticsQuery = (queryConfig) => {
         try {
           const resp = await fetchAnalyticsData(finalQuery);
           if (opts.aborted) return;
-          // NOTE: debug logs were removed after verification to keep console clean.
+          // NOTA: logs de depuração foram removidos após verificação para manter o console limpo.
           setData(resp.data);
           setLoading(false);
           setError(null);
@@ -73,7 +71,7 @@ export const useAnalyticsQuery = (queryConfig) => {
             setLoading(false);
             return;
           }
-          // backoff
+          // recuo (backoff)
           await new Promise((r) => setTimeout(r, 200 * attempt));
         }
       }
@@ -81,7 +79,7 @@ export const useAnalyticsQuery = (queryConfig) => {
   [queryKey, JSON.stringify(dateRange || [])]
   );
 
-  // effect: run when query or dateRange or refetch changes
+  // efeito: executa quando query, dateRange ou refetch mudam
   useEffect(() => {
     const controller = { aborted: false };
     doFetch(controller);
@@ -92,7 +90,7 @@ export const useAnalyticsQuery = (queryConfig) => {
 
   const refetch = () => {
     refetchTick.current += 1;
-    // force a new fetch immediately
+    // forçar um novo fetch imediatamente
     doFetch({ aborted: false });
   };
 
