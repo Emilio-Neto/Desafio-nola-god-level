@@ -35,3 +35,34 @@ build/
 # OS
 Thumbs.db
 
+# Python caches and test artifacts
+.pytest_cache/
+.mypy_cache/
+__pypackages__/
+htmlcov/
+coverage.xml
+coverage/
+
+# Build and packaging
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+
+# Local env files
+.env.*.local
+.env.production
+
+# IDE/editor local history
+.idea/
+.vscode/
+
+# Node / frontend (workspace-level safety)
+# frontend has its own .gitignore but include commons here too
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Misc
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,254 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* frontend/src/App.css */
+
+.logo-placeholder {
+  height: auto;
+  /* keep left/right/top margins but remove bottom margin so we control the space to the menu explicitly */
+  margin: 12px 12px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch; /* make the logo block span the full available width */
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--page-bg, #fff);
+  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}
+
+.logo-placeholder.collapsed {
+  height: 48px;
+  /* same idea for collapsed: remove bottom margin so spacing is controlled from the menu side */
+  margin: 8px 6px 0 6px;
+  padding: 8px;
+}
+
+.sidebar-logo {
+  max-height: 48px;
+  width: auto;
+  display: block;
+}
+
+.sidebar-favicon {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* Override Ant Design dark menu selected color for Dashboard highlight */
+.ant-menu-dark .ant-menu-item-selected, .ant-menu-dark .ant-menu-item-active {
+  background-color: #fd6263 !important;
+  color: #fff !important;
+}
+
+/* Make other selected indicators use the accent color */
+.ant-menu-dark .ant-menu-item::after {
+  background: rgba(253,98,99,0.2) !important;
+}
+
+/* Ensure the sider stacks logo then menu and the menu has rounded corners */
+.ant-layout-sider {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the internal children container starts below the logo and fills the remaining height
+   so the menu area spans from just under the logo to the bottom of the sider. */
+.ant-layout-sider > .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0; /* remove default padding so inner blocks align flush */
+}
+
+/* Make the logo block fixed-height and the menu wrapper fill the remaining space */
+.ant-layout-sider > .ant-layout-sider-children > .logo-placeholder {
+  flex: 0 0 auto;
+}
+
+.ant-layout-sider > .ant-layout-sider-children > .sidebar-menu-wrapper {
+  flex: 1 1 auto;
+  margin: 0 12px 12px 12px; /* keep horizontal margins and bottom spacing */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Ensure the inner ant-menu fills the wrapper and allows internal scrolling. */
+.sidebar-menu-wrapper .ant-menu {
+  height: 100%;
+  background: transparent !important;
+  border-radius: 12px;
+  padding-top: 16px !important;
+  overflow: auto; /* allow scrolling if items overflow the available height */
+}
+
+/* Make the Sider fixed so it stays visible while the content scrolls. Adjust the
+   sibling Layout's margin so it doesn't get covered. Handles collapsed state too. */
+.ant-layout > .ant-layout-sider {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+}
+
+/* Default sider width in Ant is 200px; collapsed width usually 80px. Keep smooth transition. */
+.ant-layout > .ant-layout-sider + .ant-layout {
+  margin-left: 200px;
+  transition: margin-left 200ms ease;
+}
+
+/* When the sider is collapsed Ant adds the 'ant-layout-sider-collapsed' class */
+.ant-layout > .ant-layout-sider.ant-layout-sider-collapsed + .ant-layout {
+  margin-left: 80px;
+}
+
+/* Small screens: don't fix the sider so mobile UX stays normal */
+@media (max-width: 768px) {
+  .ant-layout > .ant-layout-sider {
+    position: relative;
+    height: auto;
+  }
+
+  .ant-layout > .ant-layout-sider + .ant-layout {
+    margin-left: 0;
+  }
+}
+
+.sidebar-menu-wrapper {
+  flex: 1 1 auto;
+  margin: 0 12px 12px 12px;
+  border-radius: 12px;
+  overflow: hidden; /* clip menu so corners appear rounded */
+  /* darker blue block for menu area */
+  background: linear-gradient(180deg,#061726 0%, #062634 100%);
+  /* we remove the small default top padding: padding for the visual gap will be provided explicitly on the inner menu */
+  padding-top: 0;
+}
+
+/* Tweak menu inner background to match dark theme while keeping rounded corners */
+.sidebar-menu-wrapper .ant-menu {
+  height: 100%;
+  background: transparent !important;
+  border-radius: 12px;
+  /* make the inner top padding equal to the distance from the logo to the menu block so spacing appears balanced */
+  padding-top: 16px !important;
+}
+
+/* make the rounded top of the menu more pronounced */
+.sidebar-menu-wrapper .ant-menu-root {
+  border-top-right-radius: 12px;
+}
+
+/* Estilo para os widgets da grade */
+.widget {
+  background-color: #f0f2f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Estilos para o conteúdo do widget */
+.widget-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.widget-container h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+.widget-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Garante que o gráfico ocupe o espaço restante */
+.widget-container >.echarts-for-react {
+  flex-grow: 1;
+}
+
+/*... seus estilos anteriores... */
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.widget-header h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Header greeting style: bold and more suitable UI font */
+.header-greeting {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.375rem; /* larger for better visibility */
+  color: #111827; /* dark gray for better contrast */
+  letter-spacing: -0.01em;
+}
+
+/* Ensure the logo background visually matches the menu width when sider is wider */
+.logo-placeholder .sidebar-logo {
+  max-height: 48px;
+  width: auto;
+  display: block;
+}

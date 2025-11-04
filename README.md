@@ -1,79 +1,52 @@
-# 🏆 God Level Coder Challenge
+This repository contains the God Level coding challenge solution skeleton.
 
-## O Problema
+Note: see `Markdowns (Excluir depois)/README.md` for the full problem statement and quickstart.
 
-Donos de restaurantes gerenciam operações complexas através de múltiplos canais (presencial, iFood, Rappi, app próprio). Eles têm dados de **vendas, produtos, clientes e operações**, mas não conseguem extrair insights personalizados para tomar decisões de negócio.
+Important local dev note:
 
-Ferramentas como Power BI são genéricas demais. Dashboards fixos não respondem perguntas específicas. **Como empoderar donos de restaurantes a explorarem seus próprios dados?**
+If you have PostgreSQL running locally on the host, Docker's default mapping of port `5432` may conflict with your local server.
+Two options to avoid that:
 
-## Seu Desafio
+1. Stop the local Postgres instance (via services.msc or `Stop-Service`) so the container can bind to 5432.
+2. Or remap the container port to a different host port (example: `5433:5432`) in `docker-compose.yml` and update `backend/.env` to point to `localhost:5433`.
 
-Construa uma solução que permita donos de restaurantes **criarem suas próprias análises** sobre seus dados operacionais. Pense: "Power BI para restaurantes" ou "Metabase específico para food service".
+This will prevent `psql` from accidentally connecting to a different Postgres server and causing authentication errors.
 
-### O que esperamos
+How to run the backend and tests (Windows PowerShell)
+---------------------------------------------------
 
-Uma plataforma onde um dono de restaurante possa:
-- Visualizar métricas relevantes (faturamento, produtos mais vendidos, horários de pico)
-- Criar dashboards personalizados sem escrever código
-- Comparar períodos e identificar tendências
-- Extrair valor de dados complexos de forma intuitiva
+Quick steps to get the backend running locally and to run tests. Run these from the repository root.
 
-### O que você recebe
+1. Create and activate a Python virtualenv (PowerShell):
 
-- Script para geração de **500.000 vendas** de 6 meses (50 lojas, múltiplos canais)
-- Schema PostgreSQL com dados realistas de operação
-- Liberdade total de tecnologias e arquitetura
-- Liberdade total no uso de AI e ferramentas de geração de código
+```powershell
+cd .\backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
 
-### O que você entrega
+2. Install runtime + test dependencies:
 
-1. Uma solução funcionando (deployed ou local) - com frontend e backend adequados ao banco fornecido
-2. Documentação de decisões arquiteturais
-3. Demo em vídeo (5-10 min) explicando sua abordagem - mostrando a solução funcional e deployada / rodando na sua máquina, apresentando-a no nível de detalhes que julgar relevante
-4. Código bem escrito e testável
+```powershell
+# installs runtime and test deps listed in backend/requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-## 📚 Documentação
+3. Run the API locally (uses the .env in backend/):
 
-| Documento | Descrição |
-|-----------|-----------|
-| [PROBLEMA.md](./PROBLEMA.md) | Contexto detalhado, persona Maria, dores do usuário |
-| [DADOS.md](./DADOS.md) | Schema completo, padrões, volume de dados |
-| [AVALIACAO.md](./AVALIACAO.md) | Como avaliaremos sua solução |
-| [FAQ.md](./FAQ.md) | Perguntas frequentes |
-| [QUICKSTART.md](./QUICKSTART.md) | Tutorial rápido para começar o desafio |
+```powershell
+# from backend\
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
 
-## Avaliação
+4. Run tests (from backend):
 
-**Não** estamos avaliando se você seguiu instruções específicas.  
-**Sim** estamos avaliando:
-- Pensamento arquitetural e decisões técnicas
-- Qualidade da solução para o problema do usuário
-- Performance e escala
-- UX e usabilidade
-- Metodologia de trabalho e entrega
+```powershell
+python -m pytest -q
+```
 
-
-## Prazo
-
-Até 03/11/2025 às 23:59.
-
-## Submissão
-
-Mande um email para gsilvestre@arcca.io
-
-Com:
-- Link do repositório (público ou nos dê acesso)
-- Link do vídeo demo (5-10 min)
-- Link do deploy (opcional mas valorizado)
-- Documento de decisões arquiteturais
-
-## Suporte
-- 💬 **Discord**: https://discord.gg/pRwmm64Vej
-- 📧 **Email**: gsilvestre@arcca.io
-- 📧 **Telefone**: (11) 93016 - 3509
-
----
-
-**Não queremos que você adivinhe o que queremos. Queremos ver como VOCÊ resolveria este problema.**
-
-_Nola • 2025_
+Notes:
+- `requirements.txt` includes testing deps (pytest, httpx) so CI and local runs behave the same.
+- If your local PostgreSQL is running and you prefer not to stop it, use the remap-to-5433 approach described above.
+- The repository also contains a GitHub Actions workflow at `.github/workflows/python-app.yml` which runs the tests on push/PR.
